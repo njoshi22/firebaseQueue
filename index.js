@@ -29,7 +29,7 @@ function transformMessage(userStatus, message) {
 		status: userStatus,
 		message: message
 	});
-	
+
 	if(userStatus == true) {
 		return {
 			to: message.to,
@@ -39,9 +39,8 @@ function transformMessage(userStatus, message) {
 			serverTime: Firebase.ServerValue.TIMESTAMP,
 			userStatus: userStatus
 		};
-	}
-
-	return {
+	} else {
+		return {
 		to: message.to,
 		from: 'Firebase Queue',
 		text: message.text,
@@ -49,4 +48,5 @@ function transformMessage(userStatus, message) {
 		serverTime: Firebase.ServerValue.TIMESTAMP,
 		userStatus: userStatus
 	};
+	}
 };

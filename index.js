@@ -11,7 +11,8 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 	var userStatus = userRef.child('data');
 
 	userStatus.on('value', function(snap) {
-		userMessages.push(transformMessage(snap.val().isAvailable, data), 
+		userMessages.push(
+			transformMessage(snap.val().isAvailable, data), 
 			function(error) {
 				if(error) {
 					console.log(error);
@@ -24,13 +25,19 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 });
 
 function transformMessage(userStatus, message) {
+	console.log({
+		status: userStatus,
+		message: message
+	});
+	
 	if(userStatus == true) {
 		return {
 			to: message.to,
 			from: message.from,
 			text: message.text,
 			time: message.time,
-			serverTime: Firebase.ServerValue.TIMESTAMP
+			serverTime: Firebase.ServerValue.TIMESTAMP,
+			userStatus: userStatus
 		};
 	}
 
@@ -39,6 +46,7 @@ function transformMessage(userStatus, message) {
 		from: 'Firebase Queue',
 		text: message.text,
 		time: message.time,
-		serverTime: Firebase.ServerValue.TIMESTAMP
+		serverTime: Firebase.ServerValue.TIMESTAMP,
+		userStatus: userStatus
 	};
 };

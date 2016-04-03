@@ -1,6 +1,8 @@
 var Firebase = require('firebase');
 var Queue = require('firebase-queue');
 
+console.log('Process started');
+
 var ref = new Firebase('https://nj-react.firebaseio.com');
 var queueRef = ref.child('messageQueue');
 
@@ -25,12 +27,7 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 });
 
 function transformMessage(userStatus, message) {
-	console.log({
-		status: userStatus,
-		message: message
-	});
-
-	if(userStatus == true) {
+	if(userStatus) {
 		return {
 			to: message.to,
 			from: message.from,
@@ -38,15 +35,15 @@ function transformMessage(userStatus, message) {
 			time: message.time,
 			serverTime: Firebase.ServerValue.TIMESTAMP,
 			userStatus: userStatus
-		};
+		}
 	} else {
 		return {
-		to: message.to,
-		from: 'Firebase Queue',
-		text: message.text,
-		time: message.time,
-		serverTime: Firebase.ServerValue.TIMESTAMP,
-		userStatus: userStatus
-	};
+			to: message.to,
+			from: 'Firebase Queue',
+			text: message.text,
+			time: message.time,
+			serverTime: Firebase.ServerValue.TIMESTAMP,
+			userStatus: userStatus
+		}
 	}
 };

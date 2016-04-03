@@ -27,7 +27,7 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 });
 
 function transformMessage(userStatus, message) {
-	if(userStatus == 'true') {
+	if(userStatus || userStatus == 'true') {
 		return {
 			to: message.to,
 			from: message.from,

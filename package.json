@@ -12,5 +12,9 @@
   "dependencies": {
     "firebase": "^2.4.1",
     "firebase-queue": "^1.2.1"
+  },
+  "devDependencies": {
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1"
   }
 }

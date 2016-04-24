@@ -26,7 +26,7 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 	// console.log('Data received: ', data);
 	// var recipient = data.to.toString();
 	// var recipientRef = ref.child(recipient);
-	// var recipientMessages = recipientRef.child('messages');
+	// var recipientMessages = recipientRef.child('messagfies');
 	// var recipientStatus = recipientRef.child('data').child('isAvailable');
 	// console.log('User data retrieved');
 
@@ -40,16 +40,27 @@ var q = new Queue(queueRef, function(data,progress,resolve,reject) {
 	// console.log('Contact info received for both sender and recipient');
 
 	//1. Create messageKey / reference
-	var messageKey = messagesRef.push();
+	var newMessageRef = messagesRef.push();
 
 	//2. Add data to that key location
-	messageKey.set(Object.assign(data, {
+	newMessageRef.set(Object.assign(data, {
 		time: Firebase.ServerValue.TIMESTAMP
 	}));
 
-	//3. Add that messageKey to /threads/threadId/messages
-	threadsRef.child(data.threadId).child('messages').child(messageKey.key()).set(true)
+	//3. Add that newMessageRef to /threads/$threadId/messages
+	threadsRef.child(data.threadId).child('messages').child(newMessageRef.key()).set(true)
 	.then(resolve(data));
+
+	//4. Update $userId/threads to have the threadId for all participants
+	var participants = [];
+	threadsRef.child(data.threadId).child('participants').once('value').then(snap => {
+		return snap.forEach(usersnap => {
+			var user = Object.keys(usersnap.val())[0];
+			ref.child(user).child('threads').child(data.threadId).set({
+				silent: true
+			});
+		});
+	});
 
 	//Send the message and update
 	// recipientStatus.on('value', function(snap) {
